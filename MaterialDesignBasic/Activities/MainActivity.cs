@@ -14,6 +14,7 @@ using MaterialDesignBasic.Adapters;
 using Android.Support.V7.App;
 using Android.Support.Design.Widget;
 using Android.Views.Animations;
+using Android.Support.V7.Widget;
 
 namespace MaterialDesignBasic.Activities
 {
@@ -28,14 +29,19 @@ namespace MaterialDesignBasic.Activities
 
             SetContentView(Resource.Layout.main);
 
-            var activityList = FindViewById<ListView>(Resource.Id.activityList);
             fab = FindViewById<FloatingActionButton>(Resource.Id.fab_add);
-
             fab.Click += OnFabClick;
             fab.Visibility = ViewStates.Invisible;
+
+            var activityList = FindViewById<RecyclerView>(Resource.Id.activityList);
             var activityService = new ActivityService();
             var activities = activityService.FetchActivityList();
-            activityList.Adapter = new ActivityAdapter(activities, this);
+            var layoutManager = new LinearLayoutManager(this);
+            var adapter = new ActivityAdapter(activities);
+
+            layoutManager.Orientation = LinearLayoutManager.Vertical;
+            activityList.SetLayoutManager(layoutManager);
+            activityList.SetAdapter(adapter);
         }
 
         private void OnFabClick(object sender, EventArgs e)
